@@ -1,0 +1,31 @@
+name: Update GitHub Pages every hour
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Run every hour at minute 0
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        run: python main.py
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+      - name: Push changes
+        uses: EndBug/push@v2
+        with:
+          branch: main
