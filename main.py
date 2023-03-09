@@ -89,12 +89,14 @@ print("Writing to json...")
 write(prices, names)
 print("Done!")
 
+print("Writing to html...")
 try:
     with open('index.html', 'w+') as index_file:
         with open('data/data.json', 'r') as data_file:
             index_file.write(data_file.read())
 except Exception as e:
     print(f'An error occurred: {e}')
+print("Done!")
 
 driver.quit()
 index_file.close()
