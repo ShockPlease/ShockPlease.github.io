@@ -25,8 +25,12 @@ jobs:
 
       - name: Run Python script
         run: python main.py
+        
+  commit:
+    runs-on: windows-latest
+    steps:
+       - name: Commit changes
+         uses: stefanzweifel/git-auto-commit-action@v4
+         with:
+            commit_message: "Automatically updated index.html"
 
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Automatically updated index.html"
