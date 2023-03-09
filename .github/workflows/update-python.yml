@@ -2,11 +2,11 @@ name: Update GitHub Pages every hour
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Run every hour at minute 0
+    - cron: '13 * * * *'  # Run every hour at minute 0
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -24,8 +24,6 @@ jobs:
         run: python main.py
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v7
-      - name: Push changes
-        uses: EndBug/push@v2
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: main
+          commit_message: "Automatically updated index.html"
