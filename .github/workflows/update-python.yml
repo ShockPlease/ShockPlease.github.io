@@ -2,11 +2,11 @@ name: Update GitHub Pages every hour
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours at minute 0
+    - cron: '5 * * * *'  # Run every 6 hours at minute 0
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -25,22 +25,3 @@ jobs:
 
       - name: Run Python script
         run: python main.py
-
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Automatically updated index.html"
-          commit_user_name: github-actions[bot]
-          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-          commit_author: ShockPlease <ShockPlease@users.noreply.github.com>
-          skip_dirty_check: false
-          skip_fetch: false
-          skip_checkout: false
-          disable_globbing: false
-          create_branch: false
-          internal_git_binary: git
-          repository: .
-          file_pattern: .
-          skip_cleanup: true
-          push_to: "origin"
-          access_token: ${{ secrets.shock_token }}
