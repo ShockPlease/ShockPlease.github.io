@@ -50,9 +50,9 @@ while len(names) == previous:
     names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 def updated(previous):
-    if previous != len(prices):
+    if previous != len(names):
         return True
-    elif previous == len(prices):
+    elif previous == len(names):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         return False
 
