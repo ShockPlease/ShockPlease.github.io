@@ -1,6 +1,8 @@
 import os
 from selenium import webdriver
 import json
+import requests
+import base64
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -96,15 +98,38 @@ print("Writing to json...")
 write(basePrices, avgPrices, names)
 print("Done!")
 
-print("Writing to html...")
-try:
-    with open('index.html', 'w+') as index_file:
-        with open('data/data.json', 'r') as data_file:
-            index_file.write(data_file.read())
-except Exception as e:
-    print(f'An error occurred: {e}')
-print("Done!")
+# Set the owner, repository name, and file path
+owner = 'ShockPlease'
+repo = 'ShockPlease.github.io'
+path = 'index.html'
+
+# Get the personal access token from an environment variable
+token = "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"
+# Retrieve the current contents of index.html
+headers = {
+    'Authorization': f'token {token}',
+    'Accept': 'application/vnd.github.v3.raw'
+}
+response = requests.get(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers)
+response.raise_for_status()
+content = response.content
+
+with open('data/data.json', 'r') as data_file:
+    new_content = content.decode().replace('old text', data_file.read())
+
+# Encode the new content as base64
+encoded_content = base64.b64encode(new_content.encode()).decode()
+
+# Update the file in the repository
+data = {
+    'message': 'Update index.html',
+    'content': encoded_content,
+}
+response = requests.put(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers, json=data)
+print('File updated successfully!')
 
 driver.quit()
-index_file.close()
+data_file.close()
+
+driver.quit()
 data_file.close()
