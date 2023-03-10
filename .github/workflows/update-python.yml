@@ -2,7 +2,7 @@ name: Update GitHub Pages every hour
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Run every hour at minute 0
+    - cron: '35 * * * *'  # Run every hour at minute 0
 
 jobs:
   build-and-deploy:
