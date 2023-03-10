@@ -41,7 +41,7 @@ load_more = driver.find_element(By.XPATH, """//*[@id="__nuxt"]/div/div/div[2]/di
 load_more.click()
 
 avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
-basePrices = driver.find_elements(By.CLASS_NAME, "alt")
+basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
 names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 previous = 0
@@ -57,8 +57,10 @@ def updated(previous):
         return False
 
 def write(base, alt, name_list):
-    alt_prices = [alt.text.replace("₽", "") for alt_price in alt]
-    base_prices = [base.text.replace("₽", "") for base_price in base]
+    strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    alt_prices = [alt_price.text.replace("₽", "") for alt_price in alt]
+    base_prices = [base_price.text.replace("₽", "") for base_price in base]
+    base_prices = [item.text.replace('\u20bd', '').replace('\n', '').replace(':', '') for item in basePrices if item.text.strip() and not any(char in item.text for char in strings) and ':' not in item.text and '\n' not in item.text]
     names = [name.text for name in name_list]
     data = [{"Name": name, "Base Price": base, "Flea Price": alt} for name, base, alt in zip(names, base_prices, alt_prices)]
     with open("data\data.json", "a") as outfile: 
@@ -73,7 +75,7 @@ def write(base, alt, name_list):
 count_no_change = 0  # counter for the number of times the price count has not changed
 while True:
     avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
-    basePrices = driver.find_elements(By.CLASS_NAME, "alt")
+    basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
     names = driver.find_elements(By.CSS_SELECTOR, "span.name")
     if updated(previous=previous): 
         current = len(names)
@@ -82,14 +84,16 @@ while True:
             print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             count_no_change = 0
+            break
     else:
         count_no_change += 1
         if count_no_change == 25: 
             print("No more new prices.") # this is to prevent the script from running forever
             break
 
+
 print("Writing to json...")
-write(prices, names)
+write(basePrices, avgPrices, names)
 print("Done!")
 
 print("Writing to html...")
