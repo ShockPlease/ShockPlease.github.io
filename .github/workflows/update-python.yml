@@ -43,4 +43,4 @@ jobs:
           file_pattern: .
           skip_cleanup: true
           push_to: "origin"
-          access_token: ${{ secrets.SHOCK_TOKEN }}
+          access_token: ${{ secrets.shock_token }}
