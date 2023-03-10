@@ -46,8 +46,8 @@ names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 previous = 0
 
-while len(prices) == previous:
-    prices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+while len(names) == previous:
+    names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 def updated(previous):
     if previous != len(prices):
