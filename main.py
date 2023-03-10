@@ -40,7 +40,8 @@ WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*
 load_more = driver.find_element(By.XPATH, """//*[@id="__nuxt"]/div/div/div[2]/div[2]/button""")
 load_more.click()
 
-prices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+basePrices = driver.find_elements(By.CLASS_NAME, "alt")
 names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 previous = 0
@@ -55,11 +56,12 @@ def updated(previous):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         return False
 
-def write(price_list, name_list):
-    prices = [price.text.replace("₽", "") for price in price_list]
+def write(base, alt, name_list):
+    alt_prices = [alt.text.replace("₽", "") for alt_price in alt]
+    base_prices = [base.text.replace("₽", "") for base_price in base]
     names = [name.text for name in name_list]
-    data = [{"Name": name, "Price": price} for name, price in zip(names, prices)]
-    with open("data\data.json", "a") as outfile:
+    data = [{"Name": name, "Base Price": base, "Flea Price": alt} for name, base, alt in zip(names, base_prices, alt_prices)]
+    with open("data\data.json", "a") as outfile: 
         if outfile.tell() == 0:  # if file is empty, write opening bracket
             outfile.write('[')
         else:  # if file is not empty, move cursor to end of last object and write comma separator
@@ -70,10 +72,11 @@ def write(price_list, name_list):
 
 count_no_change = 0  # counter for the number of times the price count has not changed
 while True:
-    prices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+    avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+    basePrices = driver.find_elements(By.CLASS_NAME, "alt")
     names = driver.find_elements(By.CSS_SELECTOR, "span.name")
     if updated(previous=previous): 
-        current = len(prices)
+        current = len(names)
         if current > previous:
             previous = current
             print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
