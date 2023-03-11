@@ -14,11 +14,11 @@ jobs:
       - name: Build Jekyll site
         uses: helaili/jekyll-action@2.5.0
         with:
-          personal_token: ${{ secrets.shock_token }}
+          token: ${{ secrets.shock_token }}
           args: build
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3.9.2
         with:
-          personal_token: ${{ secrets.shock_token }}
+          token: ${{ secrets.shock_token }}
           publish_dir: ./_site
