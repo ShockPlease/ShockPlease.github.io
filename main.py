@@ -104,7 +104,7 @@ repo = 'ShockPlease.github.io'
 path = 'html/api/api.html'
 
 # Get the personal access token from an environment variable
-token = os.environ.get("shock_token")
+token = os.environ["shock_token2"]
 # Retrieve the current contents of index.html
 headers = {
     'Authorization': f'token {token}',
