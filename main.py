@@ -86,6 +86,7 @@ while True:
             print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             count_no_change = 0
+            break
     else:
         count_no_change += 1
         if count_no_change == 25: 
