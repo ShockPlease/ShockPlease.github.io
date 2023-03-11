@@ -5,7 +5,9 @@ Tarkov Items API is an API that extracts data from Escape from Tarkov, a popular
 The Tarkov Items API provides access to a wide range of information on items in the game, including so far:
 
 Item name
+
 Item trader price
+
 Item flea price
 
 # Integration with RaidVoice
@@ -19,10 +21,15 @@ The API is regularly updated every 8 hours, so you can be sure that you are alwa
 The Tarkov Items API plans to include several endpoints, each providing access to different types of data. These endpoints will include:
 
 /items - Returns a list of all items in the game, with basic information such as name and type.
+
 /items/{item-id} - Returns detailed information on a specific item, including its description, image, price, rarity, and more.
+
 /items/quest/{quest-name} - Returns a list of all items required for a specific quest in the game, along with their details.
+
 /items/trader/{trader-name} - Returns a list of all items that can be bought or sold by a specific trader in the game, along with their prices and level requirements.
-Getting Started
+
+# Getting Started
+
 To get started using the Tarkov Items API, simply make a request to one of the API endpoints using your preferred programming language. The API response will be returned in JSON format, making it easy to parse and use in your own applications.
 
 # Authentication
