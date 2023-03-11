@@ -6,8 +6,6 @@ beautifulsoup4
 bottle
 bottle-websocket
 bs4
-base64
-requests
 certifi
 cffi
 chardet
