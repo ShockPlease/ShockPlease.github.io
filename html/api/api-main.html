@@ -4,8 +4,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
-    <link href="styles.css" rel="stylesheet">
-    <link href="bg.css" rel="stylesheet">
+    <link href="api-main.css" rel="stylesheet">
+    <link href="api-bg.css" rel="stylesheet">
     <script src="app.js"></script>
     <title>ShockPlease's website</title>
 </head>
@@ -43,9 +43,25 @@
      </div>
 
     <p class="footnote regular inter align-center opaque transition nowrap">Written by Aidan Neel 2022</p>
+    <p class="semibold inter white transition nowrap above-element" id="code-example-label">Python Example</p>
+     
+    <div class="code-example-container">
+        <pre>
+          <code>
+            # Python Example for Tarkov Items API Call
 
-    <h1 class="top-middle bold inter align-center big transition nowrap fade-in transparent" id="main">Hello, World!</h1>
-    <p class="semibold inter transparent transition nowrap fade-in-delay" id="projectH">My Projects</p>
-    <a class='regular inter transparent transition nowrap fade-in-delay' id='project1' href="html/api/api.html">Tarkov Items API</a></p>
+            import requests
+            import json
+
+            url = 'https://shockplease.github.io/html/api/api.html'
+            r = requests.get(url)
+            print("Status code:", r.status_code)
+
+            data = json.loads(r.text)
+          </code>
+        </pre>
+      </div>
+
+    <h1 class="top-middle bold inter align-center big transition nowrap fade-in transparent" id="main">Tarkov Items API</h1>
 </body>
 </html>

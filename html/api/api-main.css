@@ -7,38 +7,31 @@
     }
   }
 
-#projectH{
-    font-size: 2.5vh;
-    position: absolute;
-    top: 20.5vh;
-    left: 50vw;
-    transform: translate(-50%, -50%);
-}
-
-#project1{
-    font-size: 1.5vh;
-    position: absolute;
-    top: 26vh;
-    left: 50vw;
-    transform: translate(-50%, -50%);
-}
+  .code-example-container {
+    position: relative;
+    z-index: 1;
+    background-color: #0000005b;
+    color: #fff;
+    padding: 5px;
+    max-width: 600px;
+    border-radius: 1vh;
+    margin: 25vh auto 0 auto;
+    border-style: solid;
+    border-width: 0.1vh;
+  }
 
 .fade-in {
-    animation-delay: 0.75s;
+    animation-delay: 0.5s;
     animation-name: fadeIn;
-    animation-duration: 3s;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
 .fade-in-delay {
-    animation-delay: 4s;
+    animation-delay: 1s;
     animation-name: fadeIn;
     animation-duration: 2s;
     animation-fill-mode: forwards;
-}
-
-#project1:hover{
-    font-size: 1.6vh;
 }
 
 .transparent{
@@ -51,6 +44,13 @@
 
 .transition{
     transition: 0.8s;
+}
+
+.middle{
+    position: absolute;
+    top: 32.5vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
 }
 
 .footnote{
@@ -99,9 +99,3 @@
 .align-center{
     text-align: center;
 }
-
-body, html{
-    background-size: cover;
-    background-image: url("images/bg-green.svg");
-}
-
