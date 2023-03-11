@@ -1,4 +1,5 @@
 anyio
+apiai
 async-generator
 attrs
 autopep8
@@ -13,6 +14,7 @@ charset-normalizer
 click
 colorama
 comtypes
+Deprecated
 docopt
 Eel
 fastapi
@@ -38,6 +40,7 @@ outcome
 packaging
 Pillow
 pipreqs
+pocketsphinx
 protobuf
 PyAudio
 PyAutoGUI
@@ -45,7 +48,10 @@ pycodestyle
 pycparser
 pydantic
 PyGetWindow
+PyGithub
+PyJWT
 PyMsgBox
+PyNaCl
 pyparsing
 pyperclip
 pypiwin32
@@ -61,6 +67,7 @@ requests
 selenium
 sniffio
 sortedcontainers
+sounddevice
 soupsieve
 SpeechRecognition
 starlette
@@ -76,6 +83,7 @@ webdriver-manager
 websockets
 Werkzeug
 whichcraft
+wrapt
 wsproto
 yarg
 zope.event
