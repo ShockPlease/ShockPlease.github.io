@@ -86,7 +86,6 @@ while True:
             print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             count_no_change = 0
-            break
     else:
         count_no_change += 1
         if count_no_change == 25: 
@@ -104,7 +103,7 @@ repo = 'ShockPlease.github.io'
 path = 'html/api/api.html'
 
 # Get the personal access token from an environment variable
-token = os.environ.get("shock_token")
+token = "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"
 # Retrieve the current contents of index.html
 headers = {
     'Authorization': f'token {token}',
