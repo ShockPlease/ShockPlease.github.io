@@ -14,7 +14,7 @@
     overflow: hidden;
 }
 
-.background span {
+.background span                                                                                                                                {
     width: 50vmin;
     height: 50vmin;
     border-radius: 50vmin;
