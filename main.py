@@ -11,8 +11,15 @@ from bs4 import BeautifulSoup
 import time
 import random
 import string
+from github import Github
 
-length = 6
+# Github credentials
+GITHUB_TOKEN = os.environ['shock_token2']
+REPO_NAME = 'ShockPlease.github.io'
+FILE_NAME = 'api.html'
+FILE_PATH = f'html/api/{FILE_NAME}'
+
+length = 8
 
 items = []
 
@@ -74,62 +81,34 @@ def write(base, alt, name_list):
         json.dump(data, outfile)
         outfile.write(']')
 
-count_no_change = 0  # counter for the number of times the price count has not changed
-while True:
-    avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
-    basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
-    names = driver.find_elements(By.CSS_SELECTOR, "span.name")
-    if updated(previous=previous): 
-        current = len(names)
-        if current > previous:
-            previous = current
-            print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            count_no_change = 0
-            break
-    else:
-        count_no_change += 1
-        if count_no_change == 25: 
-            print("No more new prices.") # this is to prevent the script from running forever
-            break
+count_no_change = 0  # counter for the number of times there is no change in the number of items on the webpage
 
-
-print("Writing to json...")
-write(basePrices, avgPrices, names)
-print("Done!")
-
-# Set the owner, repository name, and file path
-owner = 'ShockPlease'
-repo = 'ShockPlease.github.io'
-path = 'html/api/api.html'
-
-# Get the personal access token from an environment variable
-token = os.environ["shock_token2"]
-# Retrieve the current contents of index.html
-headers = {
-    'Authorization': f'token {token}',
-    'Accept': 'application/vnd.github.v3.raw'
-}
-response = requests.get(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers)
-response.raise_for_status()
-content = response.content
-
-with open('data/data.json', 'r') as data_file:
-    new_content = content.decode().replace('old text', data_file.read())
-
-# Encode the new content as base64
-encoded_content = base64.b64encode(new_content.encode()).decode()
-
-# Update the file in the repository
-data = {
-    'message': 'Update index.html',
-    'content': encoded_content,
-}
-response = requests.put(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers, json=data)
-print('File updated successfully!')
-
+while count_no_change < 10:
+    try:
+        if updated(previous):
+            write(basePrices, avgPrices, names)
+            previous = len(names)
+            print(f"{previous} items saved!")
+            count_no_change = 0 # reset counter if there is an update
+        else:
+            count_no_change += 1 # increment counter if no update
+            print(f"No update. Count: {count_no_change}")
+            time.sleep(random.randint(1, 3)) # wait for 1-3 seconds before checking for updates
+    except Exception as e:
+            print(e)
+            driver.quit()
 driver.quit()
-data_file.close()
 
-driver.quit()
-data_file.close()
+# Commit changes to Github
+g = Github(GITHUB_TOKEN)
+repo = g.get_user().get_repo(REPO_NAME)
+with open(FILE_PATH, 'rb') as file:
+    content = file.read()
+    content_base64 = base64.b64encode(content)
+try:
+    repo.get_contents(FILE_NAME)
+    repo.update_file(FILE_NAME, "Updated data.json", content_base64.decode('utf-8'))
+    print(f"{FILE_NAME} updated!")
+except:
+    repo.create_file(FILE_NAME, "Initial commit", content_base64.decode('utf-8'))
+    print(f"{FILE_NAME} created!")
