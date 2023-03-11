@@ -1,6 +1,8 @@
 import os
 from selenium import webdriver
 import json
+import requests
+import base64
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,24 +43,26 @@ load_more = driver.find_element(By.XPATH, """//*[@id="__nuxt"]/div/div/div[2]/di
 load_more.click()
 
 avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
-basePrices = driver.find_elements(By.CLASS_NAME, "alt")
+basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
 names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 previous = 0
 
-while len(prices) == previous:
-    prices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+while len(names) == previous:
+    names = driver.find_elements(By.CSS_SELECTOR, "span.name")
 
 def updated(previous):
-    if previous != len(prices):
+    if previous != len(names):
         return True
-    elif previous == len(prices):
+    elif previous == len(names):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         return False
 
 def write(base, alt, name_list):
-    alt_prices = [alt.text.replace("₽", "") for alt_price in alt]
-    base_prices = [base.text.replace("₽", "") for base_price in base]
+    strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    alt_prices = [alt_price.text.replace("₽", "") for alt_price in alt]
+    base_prices = [base_price.text.replace("₽", "") for base_price in base]
+    base_prices = [item.text.replace('\u20bd', '').replace('\n', '').replace(':', '') for item in basePrices if item.text.strip() and not any(char in item.text for char in strings) and ':' not in item.text and '\n' not in item.text]
     names = [name.text for name in name_list]
     data = [{"Name": name, "Base Price": base, "Flea Price": alt} for name, base, alt in zip(names, base_prices, alt_prices)]
     with open("data\data.json", "a") as outfile: 
@@ -73,7 +77,7 @@ def write(base, alt, name_list):
 count_no_change = 0  # counter for the number of times the price count has not changed
 while True:
     avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
-    basePrices = driver.find_elements(By.CLASS_NAME, "alt")
+    basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
     names = driver.find_elements(By.CSS_SELECTOR, "span.name")
     if updated(previous=previous): 
         current = len(names)
@@ -82,25 +86,50 @@ while True:
             print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             count_no_change = 0
+            break
     else:
         count_no_change += 1
         if count_no_change == 25: 
             print("No more new prices.") # this is to prevent the script from running forever
             break
 
+
 print("Writing to json...")
-write(prices, names)
+write(basePrices, avgPrices, names)
 print("Done!")
 
-print("Writing to html...")
-try:
-    with open('index.html', 'w+') as index_file:
-        with open('data/data.json', 'r') as data_file:
-            index_file.write(data_file.read())
-except Exception as e:
-    print(f'An error occurred: {e}')
-print("Done!")
+# Set the owner, repository name, and file path
+owner = 'ShockPlease'
+repo = 'ShockPlease.github.io'
+path = 'html/api/api.html'
+
+# Get the personal access token from an environment variable
+token = "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"
+# Retrieve the current contents of index.html
+headers = {
+    'Authorization': f'token {token}',
+    'Accept': 'application/vnd.github.v3.raw'
+}
+response = requests.get(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers)
+response.raise_for_status()
+content = response.content
+
+with open('data/data.json', 'r') as data_file:
+    new_content = content.decode().replace('old text', data_file.read())
+
+# Encode the new content as base64
+encoded_content = base64.b64encode(new_content.encode()).decode()
+
+# Update the file in the repository
+data = {
+    'message': 'Update index.html',
+    'content': encoded_content,
+}
+response = requests.put(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', headers=headers, json=data)
+print('File updated successfully!')
 
 driver.quit()
-index_file.close()
+data_file.close()
+
+driver.quit()
 data_file.close()
