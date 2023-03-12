@@ -110,7 +110,7 @@ path = 'html/api/api.html'
 
 # set up the Github API endpoint and retrieve the access token from a repository secret
 api_endpoint = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}'
-access_token = os.environ['TARKOV_TOKEN']
+access_token = os.environ.get("MY_TOKEN")
 print(access_token)
 
 # make the API request to get the current content of the file
