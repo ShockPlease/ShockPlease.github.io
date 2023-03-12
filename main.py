@@ -14,7 +14,11 @@ import string
 from github import Github
 
 # Github credentials
+<<<<<<< HEAD
 GITHUB_TOKEN = os.environ['shock_token2']
+=======
+GITHUB_TOKEN = os.environ.get('TARKOV_TOKEN')
+>>>>>>> fd8a8e7c3cb6031d0b315f60a9f3cc4cc47590c1
 REPO_NAME = 'ShockPlease.github.io'
 FILE_NAME = 'api.html'
 FILE_PATH = f'html/api/{FILE_NAME}'
