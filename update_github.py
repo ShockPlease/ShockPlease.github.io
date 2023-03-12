@@ -100,37 +100,41 @@ def loop():
     print("Writing to json...")
     write(basePrices, avgPrices, names)
     print("Done!")
+    
+def git():
+    # specify the owner, repo, and path of the file you want to update
+    owner = 'ShockPlease'
+    repo = 'ShockPlease.github.io'
+    path = 'html/api/api.html'
 
-driver.quit()
+    # set up the Github API endpoint and retrieve the access token from a repository secret
+    api_endpoint = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}'
+    access_token = os.environ.get("MY_TOKEN")
+    print(access_token)
 
-# specify the owner, repo, and path of the file you want to update
-owner = 'ShockPlease'
-repo = 'ShockPlease.github.io'
-path = 'html/api/api.html'
+    # make the API request to get the current content of the file
+    response = requests.get(api_endpoint.format(owner=owner, repo=repo, path=path), headers={'Authorization': 'Token ' + access_token})
+    response_json = response.json()
 
-# set up the Github API endpoint and retrieve the access token from a repository secret
-api_endpoint = 'https://api.github.com/repos/{owner}/{repo}/contents/{path}'
-access_token = os.environ.get("MY_TOKEN")
-print(access_token)
+    # get the current SHA of the file, which is needed to make the update
+    file_sha = response_json['sha']
 
-# make the API request to get the current content of the file
-response = requests.get(api_endpoint.format(owner=owner, repo=repo, path=path), headers={'Authorization': 'Token ' + access_token})
-response_json = response.json()
+    loop()
+    new_content = open('data/data.json', 'r').read()
+    new_content_base64 = base64.b64encode(new_content.encode('utf-8')).decode('utf-8')
 
-# get the current SHA of the file, which is needed to make the update
-file_sha = response_json['sha']
+    # make the API request to update the file
+    data = {
+        'message': 'Update file',
+        'content': new_content_base64,
+        'sha': file_sha
+    }
+    response = requests.put(api_endpoint.format(owner=owner, repo=repo, path=path), json=data, headers={'Authorization': 'Token ' + access_token})
 
-loop()
-new_content = open('data/data.json', 'r').read()
-new_content_base64 = base64.b64encode(new_content.encode('utf-8')).decode('utf-8')
+    # print the response status code to make sure the update was successful
+    print(response.status_code)
 
-# make the API request to update the file
-data = {
-    'message': 'Update file',
-    'content': new_content_base64,
-    'sha': file_sha
-}
-response = requests.put(api_endpoint.format(owner=owner, repo=repo, path=path), json=data, headers={'Authorization': 'Token ' + access_token})
-
-# print the response status code to make sure the update was successful
-print(response.status_code)
+while True:
+    loop()
+    git()
+    time.sleep(3600)
