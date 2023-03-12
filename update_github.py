@@ -31,7 +31,7 @@ for file in os.listdir('.'):
 
 for file in os.listdir('data'):
     if file.endswith('.json'):
-        os.remove(f'data\{file}')
+        os.remove(file)
         print("Removed file!")
         
 options = webdriver.ChromeOptions()
