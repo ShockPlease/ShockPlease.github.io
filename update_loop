@@ -11,19 +11,8 @@ from bs4 import BeautifulSoup
 import time
 import random
 import string
-from github import Github
 
-# Github credentials
-<<<<<<< HEAD
-GITHUB_TOKEN = os.environ['shock_token2']
-=======
-GITHUB_TOKEN = os.environ.get('TARKOV_TOKEN')
->>>>>>> fd8a8e7c3cb6031d0b315f60a9f3cc4cc47590c1
-REPO_NAME = 'ShockPlease.github.io'
-FILE_NAME = 'api.html'
-FILE_PATH = f'html/api/{FILE_NAME}'
-
-length = 8
+length = 6
 
 items = []
 
@@ -85,34 +74,28 @@ def write(base, alt, name_list):
         json.dump(data, outfile)
         outfile.write(']')
 
-count_no_change = 0  # counter for the number of times there is no change in the number of items on the webpage
-
-while count_no_change < 10:
-    try:
-        if updated(previous):
-            write(basePrices, avgPrices, names)
-            previous = len(names)
-            print(f"{previous} items saved!")
-            count_no_change = 0 # reset counter if there is an update
+def loop():
+    count_no_change = 0  # counter for the number of times the price count has not changed
+    while True:
+        avgPrices = driver.find_elements(By.CSS_SELECTOR, "span.price-main")
+        basePrices = driver.find_elements(By.CSS_SELECTOR, "div.alt")
+        names = driver.find_elements(By.CSS_SELECTOR, "span.name")
+        if updated(previous=previous): 
+            current = len(names)
+            if current > previous:
+                previous = current
+                print(f"Current progress: {current} items loaded. Previous was: {previous - 20}")
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                count_no_change = 0
+                break
         else:
-            count_no_change += 1 # increment counter if no update
-            print(f"No update. Count: {count_no_change}")
-            time.sleep(random.randint(1, 3)) # wait for 1-3 seconds before checking for updates
-    except Exception as e:
-            print(e)
-            driver.quit()
-driver.quit()
+            count_no_change += 1
+            if count_no_change == 25: 
+                print("No more new prices.") # this is to prevent the script from running forever
+                break
+    print("Writing to json...")
+    write(basePrices, avgPrices, names)
+    print("Done!")
 
-# Commit changes to Github
-g = Github(GITHUB_TOKEN)
-repo = g.get_user().get_repo(REPO_NAME)
-with open(FILE_PATH, 'rb') as file:
-    content = file.read()
-    content_base64 = base64.b64encode(content)
-try:
-    repo.get_contents(FILE_NAME)
-    repo.update_file(FILE_NAME, "Updated data.json", content_base64.decode('utf-8'))
-    print(f"{FILE_NAME} updated!")
-except:
-    repo.create_file(FILE_NAME, "Initial commit", content_base64.decode('utf-8'))
-    print(f"{FILE_NAME} created!")
+    
+driver.quit()
