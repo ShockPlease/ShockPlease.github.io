@@ -25,6 +25,7 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Run Python script
-        run: python update_github.py
         env:
-          ENV_SECRET: ${{ secrets.TARKOV_TOKEN }}
+            ENV_SECRET: ${{ secrets.MY_TOKEN }}
+        run: python update_github.py
+
