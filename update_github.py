@@ -26,12 +26,12 @@ random_string = ''.join(random.choices(letters_and_digits, k=length))
 
 for file in os.listdir('.'):
     if file.endswith('.html'):
-        os.remove(f"data\{file}")
+        os.remove(f"/home/ec2-user/ShockPlease.github.io/{file}")
         print("Removed file!")
 
 for file in os.listdir('data'):
     if file.endswith('.json'):
-        os.remove(file)
+        os.remove(f"/home/ec2-user/ShockPlease.github.io/data/{file}")
         print("Removed file!")
         
 options = webdriver.ChromeOptions()
