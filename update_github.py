@@ -26,7 +26,7 @@ random_string = ''.join(random.choices(letters_and_digits, k=length))
 
 for file in os.listdir('.'):
     if file.endswith('.html'):
-        os.remove(file)
+        os.remove(f"data\{file}")
         print(f'Removed {file}!')
 
 for file in os.listdir('data'):
