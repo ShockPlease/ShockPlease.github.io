@@ -24,8 +24,8 @@ jobs:
           pip install -r requirements.txt
         working-directory: ${{ github.workspace }}
 
-      - name: Run Python script
-        env:
-            ENV_SECRET: ${{ secrets.MY_TOKEN }}
+      - name: execute py script # email-from-python.py
+        env: 
+          MY_TOKEN: ${{ secrets.MY_TOKEN }}
         run: python update_github.py
 
